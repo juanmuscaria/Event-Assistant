@@ -1,2 +1,2 @@
-# Event-Assistant
-A client and server side mod based on https://github.com/gamerforEA/EventHelper
+# Updated ForgeGradle project template
+Using a custom forge gradle fork and gradle 5.6.4
