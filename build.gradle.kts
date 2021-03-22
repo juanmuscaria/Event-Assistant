@@ -50,13 +50,25 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+repositories {
+    mavenCentral()
+}
+tasks.named<Test>("test") {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
+
 
 dependencies {
+    "testImplementation"(platform("org.junit:junit-bom:5.7.1"))
+    "testImplementation"("org.junit.jupiter:junit-jupiter")
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -86,4 +98,3 @@ tasks.named<ProcessResources>("processResources") {
         exclude ("mcmod.info")
     }
 }
-
