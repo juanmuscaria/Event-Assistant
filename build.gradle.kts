@@ -1,5 +1,6 @@
 import net.kyori.blossom.BlossomExtension
 import net.minecraftforge.gradle.user.UserExtension
+import java.net.URI
 
 buildscript {
     repositories {
@@ -42,7 +43,7 @@ configure<UserExtension> {
     runDir = "eclipse"
 }
 
-configure<BlossomExtension>{
+configure<BlossomExtension> {
     replaceToken(mapOf("@{modId}" to modId, "@{version}" to project.version))
 }
 
@@ -50,16 +51,18 @@ configure<JavaPluginConvention> {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+
 repositories {
     mavenCentral()
+    maven { url = URI("https://github.com/juanmuscaria/maven/raw/master") }
 }
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
     testLogging {
         events("passed", "skipped", "failed")
     }
 }
-
 
 dependencies {
     "testImplementation"(platform("org.junit:junit-bom:5.7.1"))
@@ -68,7 +71,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-
+    "compile"("org.bukkit", "craftbukkit", "1.7.10")
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -95,6 +98,6 @@ tasks.named<ProcessResources>("processResources") {
 
     // copy everything else, thats not the mcmod.info
     from(sourceSets["main"].resources.srcDirs) {
-        exclude ("mcmod.info")
+        exclude("mcmod.info")
     }
 }
