@@ -12,16 +12,15 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 
-public class ImSorryNotSorry {
+public class HackyMinecraftEnv {
     final URLClassLoader ucl;
     final LaunchClassLoader classLoader;
     final ReflectionAssistant.MethodInvoker defineClass = ReflectionAssistant.getMethod(ClassLoader.class,"defineClass", String.class, byte[].class, int.class, int.class);
-    public ImSorryNotSorry() {
-        ucl = (URLClassLoader) ImSorryNotSorry.class.getClassLoader();
+    public HackyMinecraftEnv() {
+        ucl = (URLClassLoader) HackyMinecraftEnv.class.getClassLoader();
         classLoader = new LaunchClassLoader(ucl.getURLs());
     }
     public void initMinecraft() {

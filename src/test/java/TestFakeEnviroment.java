@@ -7,9 +7,9 @@ public class TestFakeEnviroment {
 
     @Test
     public void initMinecraft() {
-        ImSorryNotSorry environment = new ImSorryNotSorry();
+        HackyMinecraftEnv environment = new HackyMinecraftEnv();
         environment.initMinecraft();
-        environment.callInsideLauncherClassLoader(new ImSorryNotSorry.Callable(){
+        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable(){
             @Override
             void call() {
                 Assertions.assertEquals(GameRegistry.findUniqueIdentifierFor(Items.diamond).toString(), "minecraft:diamond");
