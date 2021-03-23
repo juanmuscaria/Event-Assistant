@@ -65,21 +65,14 @@ tasks.named<Test>("test") {
 }
 
 dependencies {
+    "compile"("org.bukkit", "craftbukkit", "1.7.10")
+    "compileOnly"("org.projectlombok:lombok:1.18.16")
+    "annotationProcessor"("org.projectlombok:lombok:1.18.16")
+
     "testImplementation"(platform("org.junit:junit-bom:5.7.1"))
     "testImplementation"("org.junit.jupiter:junit-jupiter")
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-    "compile"("org.bukkit", "craftbukkit", "1.7.10")
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    "testCompileOnly"( "org.projectlombok:lombok:1.18.16")
+    "testAnnotationProcessor"( "org.projectlombok:lombok:1.18.16")
 }
 
 tasks.named<ProcessResources>("processResources") {
