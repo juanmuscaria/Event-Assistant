@@ -30,7 +30,9 @@ buildscript {
 
 apply(plugin = "forge")
 apply(plugin = "net.kyori.blossom")
-version = "1.0"
+var versionString = "1.0.0"
+if (!project.hasProperty("release")) versionString += "-SNAPSHOT"
+version = versionString
 group = "com.juanmuscaria.event_assistant" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 val modId = "EventAssistant"
 this.setProperty("archivesBaseName", "event-assistant")
@@ -66,6 +68,7 @@ tasks.named<Test>("test") {
 
 dependencies {
     "compile"("org.bukkit", "craftbukkit", "1.7.10")
+    "compileOnly"("org.jetbrains:annotations:16.0.2")
     "compileOnly"("org.projectlombok:lombok:1.18.16")
     "annotationProcessor"("org.projectlombok:lombok:1.18.16")
 
