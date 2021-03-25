@@ -12,17 +12,33 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class HackyMinecraftEnv {
     final URLClassLoader ucl;
     final LaunchClassLoader classLoader;
     final ReflectionAssistant.MethodInvoker defineClass = ReflectionAssistant.getMethod(ClassLoader.class,"defineClass", String.class, byte[].class, int.class, int.class);
     public HackyMinecraftEnv() {
-        ucl = (URLClassLoader) HackyMinecraftEnv.class.getClassLoader();
-        classLoader = new LaunchClassLoader(ucl.getURLs());
+        this(false);
     }
+    public HackyMinecraftEnv(boolean removeBukkit) {
+        ucl = (URLClassLoader) HackyMinecraftEnv.class.getClassLoader();
+        if (!removeBukkit) classLoader = new LaunchClassLoader(ucl.getURLs());
+        else {
+            List<URL> urls = new ArrayList<>();
+            for (URL url : ucl.getURLs()) {
+                if (url.toString().contains("bukkit"))
+                    continue;
+                urls.add(url);
+            }
+            classLoader = new LaunchClassLoader(urls.toArray(new URL[0]));
+        }
+    }
+
     public void initMinecraft() {
         callInsideLauncherClassLoader(new Callable(){
             @Override
