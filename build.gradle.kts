@@ -1,39 +1,45 @@
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
 import net.kyori.blossom.BlossomExtension
 import net.minecraftforge.gradle.user.UserExtension
-import java.net.URI
 
 buildscript {
     repositories {
         mavenCentral()
         maven {
             name = "forge"
-            url = java.net.URI("http://files.minecraftforge.net/maven")
+            url = uri("http://files.minecraftforge.net/maven")
         }
         maven {
             name = "sonatype"
-            url = java.net.URI("https://oss.sonatype.org/content/repositories/snapshots/")
+            url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         }
         maven {
             name = "github"
-            url = java.net.URI("https://github.com/juanmuscaria/maven/raw/master")
+            url = uri("https://github.com/juanmuscaria/maven/raw/master")
         }
         maven {
             name = "gradle plugins"
-            url = java.net.URI("https://plugins.gradle.org/m2/")
+            url = uri("https://plugins.gradle.org/m2/")
         }
     }
     dependencies {
         classpath("net.minecraftforge.gradle:ForgeGradle:1.2-1.0.0-SNAPSHOT")
         classpath("gradle.plugin.net.kyori:blossom:1.1.0")
+        classpath("io.github.gradle-nexus:publish-plugin:1.0.0")
     }
 }
 
+//apply(plugin = )
 apply(plugin = "forge")
 apply(plugin = "net.kyori.blossom")
+apply(plugin = "signing")
+apply(plugin = "maven-publish")
+apply(plugin = "io.github.gradle-nexus.publish-plugin")
+
 var versionString = "1.0.0"
 if (!project.hasProperty("release")) versionString += "-SNAPSHOT"
 version = versionString
-group = "com.juanmuscaria.event_assistant" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "com.juanmuscaria" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 val modId = "EventAssistant"
 this.setProperty("archivesBaseName", "event-assistant")
 val minecraft = extensions.findByType<UserExtension>()
@@ -49,14 +55,42 @@ configure<BlossomExtension> {
     replaceToken(mapOf("@{modId}" to modId, "@{version}" to project.version))
 }
 
-configure<JavaPluginConvention> {
+configure<JavaPluginExtension> {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
+configure<NexusPublishExtension> {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
+configure<PublishingExtension> {
+    publications {
+        create("mavenJava", MavenPublication::class) {
+            from(components.getAt("java"))
+        }
+    }
+    repositories {
+        maven {
+            name = "local"
+            // change URLs to point to your repos, e.g. http://my.org/repo
+            val releasesRepoUrl = uri("$buildDir/repos/releases")
+            val snapshotsRepoUrl = uri("$buildDir/repos/snapshots")
+            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+        }
+    }
+}
+
 repositories {
     mavenCentral()
-    maven { url = URI("https://github.com/juanmuscaria/maven/raw/master") }
+    maven {
+        name = "github"
+        url = uri("https://github.com/juanmuscaria/maven/raw/master")
+    }
 }
 
 tasks.named<Test>("test") {
@@ -78,6 +112,16 @@ dependencies {
     "testAnnotationProcessor"( "org.projectlombok:lombok:1.18.16")
 }
 
+tasks.register<Jar>("sourcesJar") {
+    from(sourceSets!!["main"].allJava)
+    archiveClassifier.set("sources")
+}
+
+tasks.register<Jar>("javadocJar") {
+    from(tasks.named<Javadoc>("javadoc") )
+    archiveClassifier.set("javadoc")
+}
+
 tasks.named<ProcessResources>("processResources") {
     // this will ensure that this task is redone when the versions change.
     inputs.property("version", project.version)
@@ -96,4 +140,48 @@ tasks.named<ProcessResources>("processResources") {
     from(sourceSets["main"].resources.srcDirs) {
         exclude("mcmod.info")
     }
+}
+
+project.plugins.withType<MavenPublishPlugin>().all {
+    val publishing = project.extensions.getByType<PublishingExtension>()
+    publishing.publications.withType<MavenPublication>().all {
+        this.artifactId = "event-assistant"
+        this.artifact(tasks["sourcesJar"])
+        this.artifact(tasks["javadocJar"])
+//        this.versionMapping {
+//            usage("java-api") {
+//                fromResolutionOf("runtimeClasspath")
+//            }
+//            usage("java-runtime") {
+//                fromResolutionResult()
+//            }
+//        }
+        this.pom {
+            name.set("Event Assistant")
+            description.set("A set of utilities to deal with both forge and bukkit without the headache of sides")
+            url.set("https://github.com/juanmuscaria/Event-Assistant")
+            licenses {
+                license {
+                    name.set("GNU General Public License v3.0")
+                    url.set("https://www.gnu.org/licenses/gpl-3.0")
+                }
+            }
+            developers {
+                developer {
+                    id.set("juanmuscaria")
+                    name.set("juanmuscaria")
+                    email.set("juanmuscaria@gmail.com")
+                }
+            }
+            scm {
+                connection.set("scm:git:https://github.com/juanmuscaria/Event-Assistant")
+                developerConnection.set("scm:git:ssh://github.com/juanmuscaria/Event-Assistant.git")
+                url.set("https://github.com/juanmuscaria/Event-Assistant")
+            }
+        }
+    }
+}
+
+configure<SigningExtension> {
+    sign(project.extensions.getByType(PublishingExtension::class).publications.withType(MavenPublication::class)["mavenJava"])
 }
