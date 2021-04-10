@@ -1,4 +1,4 @@
-package com.juanmuscaria.event_assistant;
+package com.juanmuscaria.event_assistant.utils;
 
 import com.juanmuscaria.event_assistant.interfacing.SafeInterfacing;
 import cpw.mods.fml.common.registry.GameRegistry;

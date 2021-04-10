@@ -1,4 +1,4 @@
-import com.juanmuscaria.event_assistant.ItemUtils;
+import com.juanmuscaria.event_assistant.utils.ItemUtils;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;

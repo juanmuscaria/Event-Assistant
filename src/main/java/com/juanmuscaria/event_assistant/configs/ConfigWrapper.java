@@ -29,21 +29,31 @@ public final class ConfigWrapper {
     }
 
     public void loadDefaults() {
+        isPlayerNotifyEnabled();
         if(config.hasChanged()) {
             config.save();
         }
     }
 
-    public enum Category {
-      GENERAL("general", "General");
-      @Getter
-      private final String name;
-      @Getter
-      private final String displayName;
+    public boolean isPlayerNotifyEnabled() {
+        return config.getBoolean("notifyPlayer", Category.GENERAL.name, true, "If true a player will get notified with messages came from their fake players like missing permission to access something.");
+    }
 
-      Category(String name, String displayName) {
-        this.name = name;
-        this.displayName = displayName;
-      }
+    public enum Category {
+        GENERAL("general", "General");
+        @Getter
+        private final String name;
+        @Getter
+        private final String displayName;
+
+        Category(String name, String displayName) {
+            this.name = name;
+            this.displayName = displayName;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 }
