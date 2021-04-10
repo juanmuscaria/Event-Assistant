@@ -29,8 +29,8 @@ public class FakePlayerManager {
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
      *
      * @param world the world the fake player will be
-     * @param pos the position the fake player will be
-     * @param name the name of the fake player
+     * @param pos   the position the fake player will be
+     * @param name  the name of the fake player
      * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
      */
     @NotNull
@@ -52,7 +52,7 @@ public class FakePlayerManager {
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
      *
      * @param world the world the fake player will be
-     * @param pos the position the fake player will be
+     * @param pos   the position the fake player will be
      * @param owner the user owning this fake player with may receive proxied chat messages and help with tracking.
      *              The resulting fake player will have the same name of the owner wrapped around "[]"
      * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
@@ -78,7 +78,7 @@ public class FakePlayerManager {
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
      *
      * @param world the world the fake player will be
-     * @param pos the position the fake player will be
+     * @param pos   the position the fake player will be
      * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
      * Fake players returned by this method will always have the name "[Fake]" and will always be owned by nobody
      */

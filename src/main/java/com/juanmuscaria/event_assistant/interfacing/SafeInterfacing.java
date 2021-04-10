@@ -11,6 +11,7 @@ public interface SafeInterfacing {
 
     /**
      * Safe check to see if an item stack is from bukkit.
+     *
      * @param stack stack to check
      * @return will return true if the stack is an "org.bukkit.inventory.ItemStack"
      */
@@ -18,6 +19,7 @@ public interface SafeInterfacing {
 
     /**
      * Converts a bukkit stack to forge stack
+     *
      * @param bukkitStack a "org.bukkit.inventory.ItemStack"
      * @return "net.minecraft.item.ItemStack"
      * @throws UnsupportedOperationException if bukkit is missing
@@ -26,6 +28,7 @@ public interface SafeInterfacing {
 
     /**
      * Converts an forge stack into a bukkit stack
+     *
      * @param forgeStack A "net.minecraft.item.ItemStack"
      * @return "org.bukkit.inventory.ItemStack"
      * @throws UnsupportedOperationException if bukkit is missing

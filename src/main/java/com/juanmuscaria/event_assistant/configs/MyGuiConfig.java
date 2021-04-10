@@ -8,16 +8,16 @@ import net.minecraft.client.gui.GuiScreen;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({"rawtypes"})
 public class MyGuiConfig extends GuiConfig {
 
-  public MyGuiConfig(GuiScreen parentScreen) {
-    super(parentScreen, getConfigElements(parentScreen), EventAssistant.MOD_ID, false, false, "EventAssistant-Configs");
-  }
+    public MyGuiConfig(GuiScreen parentScreen) {
+        super(parentScreen, getConfigElements(parentScreen), EventAssistant.MOD_ID, false, false, "EventAssistant-Configs");
+    }
 
-  private static List<IConfigElement> getConfigElements(GuiScreen parent) {
-    List<IConfigElement> list = new ArrayList<>();
+    private static List<IConfigElement> getConfigElements(GuiScreen parent) {
+        List<IConfigElement> list = new ArrayList<>();
 
-    return list;
-  }
+        return list;
+    }
 }

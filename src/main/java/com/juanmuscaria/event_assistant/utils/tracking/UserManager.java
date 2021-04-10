@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
 public final class UserManager {
-    private static final User nobody = new User( "[nobody]");
+    private static final User nobody = new User("[nobody]");
     private static final ConcurrentMap<UUID, User> userCache = new MapMaker()
             .weakValues()
             .makeMap();

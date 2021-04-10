@@ -42,6 +42,7 @@ public class EventAssistant {
 
     /**
      * Check if bukkit is present in this platform
+     *
      * @return true if bukkit is present.
      */
     public static boolean hasBukkit() {

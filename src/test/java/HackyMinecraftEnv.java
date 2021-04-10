@@ -15,16 +15,17 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HackyMinecraftEnv {
     final URLClassLoader ucl;
     final LaunchClassLoader classLoader;
-    final ReflectionAssistant.MethodInvoker defineClass = ReflectionAssistant.getMethod(ClassLoader.class,"defineClass", String.class, byte[].class, int.class, int.class);
+    final ReflectionAssistant.MethodInvoker defineClass = ReflectionAssistant.getMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
+
     public HackyMinecraftEnv() {
         this(false);
     }
+
     public HackyMinecraftEnv(boolean removeBukkit) {
         ucl = (URLClassLoader) HackyMinecraftEnv.class.getClassLoader();
         if (!removeBukkit) classLoader = new LaunchClassLoader(ucl.getURLs());
@@ -40,11 +41,11 @@ public class HackyMinecraftEnv {
     }
 
     public void initMinecraft() {
-        callInsideLauncherClassLoader(new Callable(){
+        callInsideLauncherClassLoader(new Callable() {
             @Override
             void call() {
                 try {
-                    Loader.injectData(new Object[]{"a", "b", "c", "d", "1.7.10", "e", new File(""), new ArrayList<String>()});
+                    Loader.injectData("a", "b", "c", "d", "1.7.10", "e", new File(""), new ArrayList<String>());
                     Field side = FMLRelaunchLog.class.getDeclaredField("side");
                     side.setAccessible(true);
                     side.set(null, Side.SERVER);
@@ -76,22 +77,19 @@ public class HackyMinecraftEnv {
         }
     }
 
-    public Class<?> injectClass(Class<?> clazz)
-    {
-        try (InputStream in = clazz.getClassLoader().getResourceAsStream(clazz.getName().replace('.', '/') + ".class"))
-        {
+    public Class<?> injectClass(Class<?> clazz) {
+        try (InputStream in = clazz.getClassLoader().getResourceAsStream(clazz.getName().replace('.', '/') + ".class")) {
             byte[] bytes = ByteStreams.toByteArray(in);
             return (Class<?>) defineClass.invoke(classLoader, clazz.getName(), bytes, 0, bytes.length);
-        }
-        catch (Throwable throwable)
-        {
+        } catch (Throwable throwable) {
             throwable.printStackTrace();
             return null;
         }
     }
 
     public static abstract class Callable {
-        public Callable(){ }
+        public Callable() {
+        }
 
         abstract void call();
     }

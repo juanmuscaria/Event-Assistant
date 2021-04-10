@@ -11,7 +11,7 @@ public class TestFakeEnviroment {
     public void initMinecraft() {
         HackyMinecraftEnv environment = new HackyMinecraftEnv();
         environment.initMinecraft();
-        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable(){
+        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
             @Override
             void call() {
                 Bukkit.class.getName();
@@ -25,7 +25,7 @@ public class TestFakeEnviroment {
     public void assertNoBukkit() {
         HackyMinecraftEnv environment = new HackyMinecraftEnv(true);
         environment.initMinecraft();
-        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable(){
+        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
             @Override
             void call() {
                 Error error = null;

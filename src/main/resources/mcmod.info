@@ -1,16 +1,18 @@
 [
-{
-  "modid": "EventAssistant",
-  "name": "Event Assistant",
-  "description": "Helps with patching mods and interacting with bukkit",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "https://github.com/juanmuscaria/Event-Assistant",
-  "updateUrl": "",
-  "authorList": ["juanmuscaria"],
-  "credits": "gamerforEA for making https://github.com/gamerforEA/EventHelper",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
-}
+  {
+    "modid": "EventAssistant",
+    "name": "Event Assistant",
+    "description": "Helps with patching mods and interacting with bukkit",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/juanmuscaria/Event-Assistant",
+    "updateUrl": "",
+    "authorList": [
+      "juanmuscaria"
+    ],
+    "credits": "gamerforEA for making https://github.com/gamerforEA/EventHelper",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
 ]

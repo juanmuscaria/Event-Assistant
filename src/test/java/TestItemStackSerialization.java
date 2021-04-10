@@ -25,10 +25,10 @@ public class TestItemStackSerialization {
         environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
             @Override
             void call() {
-                ItemStack[] stackArray = new ItemStack[] {
-                        new ItemStack(Items.diamond,3, 5),
-                        withNbt(new ItemStack(Blocks.stone,7, 1),"{}"),
-                        withNbt(new ItemStack(Blocks.dirt,2, 4),"{tag1:\"something\",integer:5}")
+                ItemStack[] stackArray = new ItemStack[]{
+                        new ItemStack(Items.diamond, 3, 5),
+                        withNbt(new ItemStack(Blocks.stone, 7, 1), "{}"),
+                        withNbt(new ItemStack(Blocks.dirt, 2, 4), "{tag1:\"something\",integer:5}")
                 };
                 Assertions.assertEquals("<minecraft:diamond:5:3>()", ItemUtils.encodeItem(stackArray[0]));
                 Assertions.assertEquals("<minecraft:stone:1:7>({})", ItemUtils.encodeItem(stackArray[1]));
@@ -42,7 +42,7 @@ public class TestItemStackSerialization {
         environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
             @Override
             void call() {
-                String[] stackArray = new String[] {
+                String[] stackArray = new String[]{
                         "<minecraft:dirt:0:5>()", // 5 dirt
                         "<minecraft:wool:5:10>()", // 10 lime wool
                         "<minecraft:stone:0:7>({})", // 7 stones with empty nbt tag
@@ -50,25 +50,25 @@ public class TestItemStackSerialization {
                 };
                 ItemStack dirt = ItemUtils.parseItemOrNull(stackArray[0]);
                 Assertions.assertNotNull(dirt);
-                Assertions.assertEquals("minecraft:dirt",GameRegistry.findUniqueIdentifierFor(dirt.getItem()).toString());
+                Assertions.assertEquals("minecraft:dirt", GameRegistry.findUniqueIdentifierFor(dirt.getItem()).toString());
                 Assertions.assertEquals(0, dirt.getItemDamage());
                 Assertions.assertEquals(5, dirt.stackSize);
                 Assertions.assertNull(dirt.stackTagCompound);
                 ItemStack wool = ItemUtils.parseItemOrNull(stackArray[1]);
                 Assertions.assertNotNull(wool);
-                Assertions.assertEquals("minecraft:wool",GameRegistry.findUniqueIdentifierFor(wool.getItem()).toString());
+                Assertions.assertEquals("minecraft:wool", GameRegistry.findUniqueIdentifierFor(wool.getItem()).toString());
                 Assertions.assertEquals(5, wool.getItemDamage());
                 Assertions.assertEquals(10, wool.stackSize);
                 Assertions.assertNull(wool.stackTagCompound);
                 ItemStack stone = ItemUtils.parseItemOrNull(stackArray[2]);
                 Assertions.assertNotNull(stone);
-                Assertions.assertEquals("minecraft:stone",GameRegistry.findUniqueIdentifierFor(stone.getItem()).toString());
+                Assertions.assertEquals("minecraft:stone", GameRegistry.findUniqueIdentifierFor(stone.getItem()).toString());
                 Assertions.assertEquals(0, stone.getItemDamage());
                 Assertions.assertEquals(7, stone.stackSize);
                 Assertions.assertNotNull(stone.stackTagCompound);
                 ItemStack stoneNbt = ItemUtils.parseItemOrNull(stackArray[3]);
                 Assertions.assertNotNull(stoneNbt);
-                Assertions.assertEquals("minecraft:stone",GameRegistry.findUniqueIdentifierFor(stoneNbt.getItem()).toString());
+                Assertions.assertEquals("minecraft:stone", GameRegistry.findUniqueIdentifierFor(stoneNbt.getItem()).toString());
                 Assertions.assertEquals(0, stoneNbt.getItemDamage());
                 Assertions.assertEquals(7, stoneNbt.stackSize);
                 Assertions.assertNotNull(stoneNbt.stackTagCompound);

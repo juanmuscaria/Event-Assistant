@@ -19,6 +19,7 @@ public class ItemUtils {
 
     /**
      * Encodes an item into a string in the following format: <itemRegistry:metadata:amount>(nbt)
+     *
      * @param stack a bukkit or forge item stack to encode
      * @return the encoded item stack
      */
@@ -40,10 +41,11 @@ public class ItemUtils {
 
     /**
      * Parses a encoded item stack with the <itemRegistry:metadata:amount>(nbt) format back into an ItemStack
+     *
      * @param serializedItem the string which contains the serialized item
      * @return a forge item stack of the item
-     * @throws BadStackFormatException if it has an invalid stack string
-     * @throws BadNbtException if it has an invalid nbt
+     * @throws BadStackFormatException  if it has an invalid stack string
+     * @throws BadNbtException          if it has an invalid nbt
      * @throws MissingRegistryException if the item it tried to does not exist
      */
     @NotNull
@@ -54,7 +56,7 @@ public class ItemUtils {
         secondNBTToken = serializedItem.indexOf(')');
         if (firstNBTToken == -1 && secondNBTToken == -1) {
             nbt = "";
-        } else if (firstNBTToken != -1 && secondNBTToken != -1){
+        } else if (firstNBTToken != -1 && secondNBTToken != -1) {
             nbt = serializedItem.substring(firstNBTToken + 1, secondNBTToken);
             serializedItem = serializedItem.substring(0, firstNBTToken);
         } else {
@@ -77,7 +79,7 @@ public class ItemUtils {
             if (amount <= 0 || amount > 64)
                 throw new NumberFormatException("Invalid stack size: " + amount);
         } catch (NumberFormatException e) {
-            throw new BadStackFormatException("Metadata or amount is not a number:",serializedItem,e);
+            throw new BadStackFormatException("Metadata or amount is not a number:", serializedItem, e);
         }
         Item item = (Item) Item.itemRegistry.getObject(registry);
         if (item == null) {
@@ -99,6 +101,7 @@ public class ItemUtils {
 
     /**
      * Same as {@link #parseItem(String)} but will return null if an exception arises while decoding the item
+     *
      * @param serializedItem the string which contains the serialized item
      * @return a forge item stack of the item
      */

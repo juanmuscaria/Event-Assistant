@@ -12,7 +12,6 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * A custom fake player implementation which has better tracking methods for who is the owner of it.
@@ -20,7 +19,7 @@ import java.util.UUID;
 @SuppressWarnings("EntityConstructor")
 public class BetterFakePlayer extends FakePlayer {
     private final User owner;
-    private ChunkCoordinates fakePos = new ChunkCoordinates(0,0,0);
+    private ChunkCoordinates fakePos = new ChunkCoordinates(0, 0, 0);
 
     BetterFakePlayer(WorldServer world, GameProfile name, User owner) {
         super(world, name);
@@ -28,7 +27,7 @@ public class BetterFakePlayer extends FakePlayer {
     }
 
     public void setFakePosition(int x, int y, int z) {
-        setFakePosition(new ChunkCoordinates(x,y,z));
+        setFakePosition(new ChunkCoordinates(x, y, z));
     }
 
     public void setFakePosition(ChunkCoordinates pos) {
@@ -42,7 +41,7 @@ public class BetterFakePlayer extends FakePlayer {
     }
 
     @Override
-    public void addChatComponentMessage(IChatComponent message){
+    public void addChatComponentMessage(IChatComponent message) {
         if (EventAssistant.mod.getConfigs().isPlayerNotifyEnabled()) {
             EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().func_152612_a(owner.getPlayerName());
             if (player != null) {
@@ -59,6 +58,7 @@ public class BetterFakePlayer extends FakePlayer {
 
     /**
      * Gets the user that originated this fake player, useful for tracking and logging
+     *
      * @return the owner of this fake player
      */
     public User getOwner() {

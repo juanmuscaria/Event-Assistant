@@ -12,7 +12,7 @@ import java.io.File;
 
 public final class ConfigWrapper {
 
-  @Getter
+    @Getter
     private final Configuration config;
 
     public ConfigWrapper(File file) {
@@ -30,7 +30,7 @@ public final class ConfigWrapper {
 
     public void loadDefaults() {
         isPlayerNotifyEnabled();
-        if(config.hasChanged()) {
+        if (config.hasChanged()) {
             config.save();
         }
     }
