@@ -1,5 +1,8 @@
 package com.juanmuscaria.event_assistant;
 
+import lombok.Lombok;
+import lombok.SneakyThrows;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -74,23 +77,17 @@ public final class ReflectionAssistant {
                 // A function for retrieving a specific field value
                 return new FieldAccessor<T>() {
 
+                    @SneakyThrows
                     @Override
                     @SuppressWarnings("unchecked")
                     public T get(Object target) {
-                        try {
-                            return (T) field.get(target);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException("Cannot access reflection.", e);
-                        }
+                        return (T) field.get(target);
                     }
 
+                    @SneakyThrows
                     @Override
                     public void set(Object target, Object value) {
-                        try {
-                            field.set(target, value);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException("Cannot access reflection.", e);
-                        }
+                        field.set(target, value);
                     }
 
                     @Override
@@ -154,13 +151,10 @@ public final class ReflectionAssistant {
 
                 return new MethodInvoker() {
 
+                    @SneakyThrows
                     @Override
                     public Object invoke(Object target, Object... arguments) {
-                        try {
-                            return method.invoke(target, arguments);
-                        } catch (Exception e) {
-                            throw new RuntimeException("Cannot invoke method " + method, e);
-                        }
+                        return method.invoke(target, arguments);
                     }
 
                 };
@@ -201,13 +195,10 @@ public final class ReflectionAssistant {
 
                 return new ConstructorInvoker() {
 
+                    @SneakyThrows
                     @Override
                     public Object invoke(Object... arguments) {
-                        try {
-                            return constructor.newInstance(arguments);
-                        } catch (Exception e) {
-                            throw new RuntimeException("Cannot invoke constructor " + constructor, e);
-                        }
+                        return constructor.newInstance(arguments);
                     }
 
                 };
