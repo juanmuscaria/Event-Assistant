@@ -25,7 +25,7 @@ public final class UuidUtils {
     /**
      * Generate a player offline UUID.
      *
-     * @param playerName The player's name.
+     * @param playerName - the player's name.
      * @return An offline player UUID.
      */
     @NotNull
@@ -36,7 +36,7 @@ public final class UuidUtils {
     /**
      * Process a string to try to get a uuid from it.
      *
-     * @param uuid A string to process.
+     * @param uuid - string to process.
      * @return The UUID found in the string, null if no UUID is found.
      */
     @Nullable
@@ -61,7 +61,7 @@ public final class UuidUtils {
      * Get a player's UUID from Mojang's api.
      * This entire function implementation was made by 16 years old me, DO NOT USE IT BECAUSE IT SUCKS
      *
-     * @param playerName The player's name.
+     * @param playerName - the player's name.
      * @return The player's UUID, null if it was not possible to get the UUID.
      */
     //TODO: make a better method

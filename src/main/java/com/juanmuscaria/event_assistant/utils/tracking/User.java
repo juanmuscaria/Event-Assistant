@@ -1,6 +1,7 @@
 package com.juanmuscaria.event_assistant.utils.tracking;
 
 import com.juanmuscaria.event_assistant.utils.UuidUtils;
+import lombok.ToString;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.UsernameCache;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +12,10 @@ import java.util.UUID;
 
 /**
  * A simple user implementation to keep track of a player
+ *
+ * @author juanmuscaria
  */
+@ToString()
 public class User {
     @Nullable
     private final UUID uuid;
@@ -84,7 +88,7 @@ public class User {
     /**
      * Saves this object to an NBTTagCompound.
      *
-     * @param nbt An instance of the NBTTagCompound to save.
+     * @param nbt - an instance of NBTTagCompound to save.
      */
     public void saveToNbt(@NotNull NBTTagCompound nbt) {
         if (uuid != null && !this.equals(UserManager.nobody())) {

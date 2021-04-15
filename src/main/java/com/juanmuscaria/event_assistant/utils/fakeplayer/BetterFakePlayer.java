@@ -15,6 +15,8 @@ import java.util.Objects;
 
 /**
  * A custom fake player implementation which has better tracking methods for who is the owner of it.
+ *
+ * @author juanmuscaria
  */
 @SuppressWarnings("EntityConstructor")
 public class BetterFakePlayer extends FakePlayer {
@@ -26,10 +28,22 @@ public class BetterFakePlayer extends FakePlayer {
         this.owner = owner;
     }
 
+    /**
+     * Set the position of the fake player in the world.
+     *
+     * @param x - the x axi.
+     * @param y - the y axi.
+     * @param z - the z axi.
+     */
     public void setFakePosition(int x, int y, int z) {
         setFakePosition(new ChunkCoordinates(x, y, z));
     }
 
+    /**
+     * Set the position of the fake player in the world.
+     *
+     * @param pos - the position of the player in chunk coordinates.
+     */
     public void setFakePosition(ChunkCoordinates pos) {
         fakePos = Objects.requireNonNull(pos);
         setPosition(fakePos.posX, fakePos.posY, fakePos.posZ);
@@ -57,9 +71,9 @@ public class BetterFakePlayer extends FakePlayer {
     }
 
     /**
-     * Gets the user that originated this fake player, useful for tracking and logging
+     * Gets the user that originated this fake player, useful for tracking and logging.
      *
-     * @return the owner of this fake player
+     * @return The owner of this fake player.
      */
     public User getOwner() {
         return owner;

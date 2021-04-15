@@ -12,6 +12,8 @@ import java.nio.file.Files;
 
 /**
  * Main mod class, it will mostly contain internal usage stuff but some things may be useful.
+ *
+ * @author juanmuscaria
  */
 @Mod(modid = EventAssistant.MOD_ID,
         version = EventAssistant.VERSION,
@@ -19,6 +21,9 @@ import java.nio.file.Files;
 public class EventAssistant {
     public static final String MOD_ID = "@{modId}";
     public static final String VERSION = "@{version}";
+    /**
+     * Mod instance singleton.
+     */
     @Mod.Instance(MOD_ID)
     public static EventAssistant mod;
     //Checking if a class exist is slow, cache it!
@@ -41,9 +46,9 @@ public class EventAssistant {
     }
 
     /**
-     * Check if bukkit is present in this platform
+     * Check if bukkit is present in this platform.
      *
-     * @return true if bukkit is present.
+     * @return True if bukkit is present.
      */
     public static boolean hasBukkit() {
         return bukkit;

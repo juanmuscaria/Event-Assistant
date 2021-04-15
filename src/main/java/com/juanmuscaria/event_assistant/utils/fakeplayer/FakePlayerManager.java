@@ -15,23 +15,26 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * A class to help creating and configuring fake players without using much resources.
  * Do not hold any fake player returned by this, they will be reused and modified at any time.
+ *
+ * @author juanmuscaria
  */
 public class FakePlayerManager {
-    private static final GameProfile featherModProfile = new GameProfile(UuidUtils.offlineUUID("[Fake]"), "[Fake]");
+    private static final GameProfile fakeModProfile = new GameProfile(UuidUtils.offlineUUID("[Fake]"), "[Fake]");
     private static final ConcurrentMap<String, BetterFakePlayer> cache = new MapMaker()
             .weakValues()
             .makeMap();
 
-    private static SoftReference<BetterFakePlayer> featherModFakePlayer = new SoftReference<>(null);
+    private static SoftReference<BetterFakePlayer> fakeModPlayer = new SoftReference<>(null);
 
     /**
      * Get or create a fake player.
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
-     *
-     * @param world the world the fake player will be
-     * @param pos   the position the fake player will be
-     * @param name  the name of the fake player
-     * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
+     * The resulting fake player will have the name wrapped around "[]".
+     * 
+     * @param world - the world the fake player will be.
+     * @param pos   - the position the fake player will be.
+     * @param name  - the name of the fake player.
+     * @return A configured fake player.
      */
     @NotNull
     public static BetterFakePlayer get(WorldServer world, ChunkCoordinates pos, String name) {
@@ -50,11 +53,11 @@ public class FakePlayerManager {
     /**
      * Get or create a fake player.
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
+     * The resulting fake player will have the same name of the owner wrapped around "[]".
      *
-     * @param world the world the fake player will be
-     * @param pos   the position the fake player will be
-     * @param owner the user owning this fake player with may receive proxied chat messages and help with tracking.
-     *              The resulting fake player will have the same name of the owner wrapped around "[]"
+     * @param world - the world the fake player will be.
+     * @param pos   - the position the fake player will be.
+     * @param owner - the user owning this fake player with may receive proxied chat messages and help with tracking.
      * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
      */
     public static BetterFakePlayer get(WorldServer world, ChunkCoordinates pos, User owner) {
@@ -76,17 +79,17 @@ public class FakePlayerManager {
     /**
      * Get or create a fake player.
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
+     * Fake players returned by this method will always have the name "[Fake]" and will always be owned by nobody.
      *
-     * @param world the world the fake player will be
-     * @param pos   the position the fake player will be
-     * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
-     * Fake players returned by this method will always have the name "[Fake]" and will always be owned by nobody
+     * @param world - the world the fake player will be.
+     * @param pos   - the position the fake player will be.
+     * @return A configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
      */
     public static BetterFakePlayer get(WorldServer world, ChunkCoordinates pos) {
-        BetterFakePlayer player = featherModFakePlayer.get();
+        BetterFakePlayer player = fakeModPlayer.get();
         if (player == null) {
-            player = new BetterFakePlayer(world, featherModProfile, UserManager.nobody());
-            featherModFakePlayer = new SoftReference<>(player);
+            player = new BetterFakePlayer(world, fakeModProfile, UserManager.nobody());
+            fakeModPlayer = new SoftReference<>(player);
         }
         player.worldObj = world;
         player.setFakePosition(pos);

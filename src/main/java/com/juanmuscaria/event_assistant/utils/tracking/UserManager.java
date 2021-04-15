@@ -11,6 +11,12 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * A class to manage User instances and save some memory, it will always try to keep one user instance per user.
+ * Players the server never saw before and are offline will not be cached.
+ *
+ * @author juanmuscaria
+ */
 public final class UserManager {
     private static final User nobody = new User("[nobody]");
     private static final ConcurrentMap<UUID, User> userCache = new MapMaker()
@@ -23,7 +29,7 @@ public final class UserManager {
     /**
      * Read an User from an NBTTagCompound.
      *
-     * @param nbt An instance of the NBTTagCompound to read.
+     * @param nbt - an instance of the NBTTagCompound to read.
      * @return An instance of User containing player data, if the given data is invalid, returns a Nobody User.
      */
     @NotNull
@@ -42,7 +48,7 @@ public final class UserManager {
             return user;
         } catch (IllegalArgumentException e) {
             if (login != null && !login.isEmpty()) {
-                //Finding a player by name is slow, but let's hope nobody use it in an offilne server
+                //Finding a player by name is slow, but let's hope nobody use it in an offline server
                 User user = findByName(login);
                 if (user == null) { //No user found, we will have to create an offline player
                     user = new User(login);
@@ -58,7 +64,7 @@ public final class UserManager {
     /**
      * Checks if an NBTTagCompound contains a User.
      *
-     * @param nbt An instance of the NBTTagCompound to check.
+     * @param nbt - an instance of the NBTTagCompound to check.
      * @return True if the tag contains a User.
      */
     public static boolean existsInNbt(@NotNull NBTTagCompound nbt) {
@@ -66,21 +72,21 @@ public final class UserManager {
     }
 
     /**
-     * Gets the user of a player
+     * Gets the user of a player.
      *
-     * @param player the player to get the user from.
-     * @return an user of the player.
+     * @param player - the player to get the user from.
+     * @return An user of the player.
      */
     public static User fromPlayer(EntityPlayerMP player) {
         return fromProfile(Objects.requireNonNull(player).getGameProfile());
     }
 
     /**
-     * Gets the user from a complete game profile
+     * Gets the user from a complete game profile.
      *
-     * @param profile the game profile to get the user from.
-     * @return an user of the game profile.
-     * @throws IllegalArgumentException if the game profile is incomplete
+     * @param profile - the game profile to get the user from.
+     * @return An user of the game profile.
+     * @throws IllegalArgumentException if the game profile is incomplete.
      */
     public static User fromProfile(GameProfile profile) {
         if (!profile.isComplete())

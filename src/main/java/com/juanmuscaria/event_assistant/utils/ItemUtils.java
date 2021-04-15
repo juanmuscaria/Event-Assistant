@@ -18,10 +18,10 @@ import org.jetbrains.annotations.Nullable;
 public class ItemUtils {
 
     /**
-     * Encodes an item into a string in the following format: <itemRegistry:metadata:amount>(nbt)
+     * Encodes an item stack into a string in the following format: <itemRegistry:metadata:amount>(nbt)
      *
-     * @param stack a bukkit or forge item stack to encode
-     * @return the encoded item stack
+     * @param stack - a bukkit or forge item stack to encode.
+     * @return The encoded item stack.
      */
     public static @NotNull String encodeItem(Object stack) {
         if (SafeInterfacing.$.isBukkitStack(stack)) {
@@ -40,51 +40,75 @@ public class ItemUtils {
     }
 
     /**
-     * Parses a encoded item stack with the <itemRegistry:metadata:amount>(nbt) format back into an ItemStack
+     * Parses a encoded item stack with the <itemRegistry:metadata:amount>(nbt) format back into an ItemStack.
      *
-     * @param serializedItem the string which contains the serialized item
-     * @return a forge item stack of the item
-     * @throws BadStackFormatException  if it has an invalid stack string
-     * @throws BadNbtException          if it has an invalid nbt
-     * @throws MissingRegistryException if the item it tried to does not exist
+     * @param serializedItem - the string which contains the serialized item.
+     * @return A forge item stack of the item.
+     * @throws BadStackFormatException  if it has an invalid stack string.
+     * @throws BadNbtException          if it has an invalid nbt.
+     * @throws MissingRegistryException if the item it tried to does not exist.
      */
     @NotNull
     public static ItemStack parseItem(String serializedItem) throws BadStackFormatException, BadNbtException, MissingRegistryException {
-        int fistStackToken, secondStackToken, firstNBTToken, secondNBTToken, metadata, amount;
-        String nbt, itemIdentifier, registry;
+        int fistStackToken;
+        int secondStackToken;
+        int firstNBTToken;
+        int secondNBTToken;
+        int metadata;
+        int amount;
+        String nbt;
+        String itemIdentifier;
+        String registry;
+
+        //Search for the nbt token.
         firstNBTToken = serializedItem.indexOf('(');
-        secondNBTToken = serializedItem.indexOf(')');
+        secondNBTToken = serializedItem.lastIndexOf(')');
         if (firstNBTToken == -1 && secondNBTToken == -1) {
+            //No nbt found.
             nbt = "";
         } else if (firstNBTToken != -1 && secondNBTToken != -1) {
+            //Extract the nbt string.
             nbt = serializedItem.substring(firstNBTToken + 1, secondNBTToken);
             serializedItem = serializedItem.substring(0, firstNBTToken);
         } else {
+            //Unbalanced nbt token, either corrupted or badly formatted.
             throw new BadStackFormatException("Invalid nbt identifier", serializedItem);
         }
+
+        //Search for the item stack token.
         fistStackToken = serializedItem.indexOf('<');
         secondStackToken = serializedItem.lastIndexOf('>');
         if (fistStackToken == -1 || secondStackToken == -1) {
+            //Unbalanced stack token, either corrupted or badly formatted.
             throw new BadStackFormatException("Invalid stack identifier", serializedItem);
         }
+
+        //Extract all necessary information to reconstruct the stack.
         itemIdentifier = serializedItem.substring(fistStackToken + 1, secondStackToken);
-        String[] splitRegistry = itemIdentifier.split(":");
-        if (splitRegistry.length != 4) {
+        String[] splitIdentifier = itemIdentifier.split(":");
+        if (splitIdentifier.length != 4) {
+            //Missing or additional information, consider it invalid.
             throw new BadStackFormatException("Invalid stack identifier", serializedItem);
         }
-        registry = splitRegistry[0] + ':' + splitRegistry[1];
+
+        //Reconstruct the item registry and the stack attributes.
+        registry = splitIdentifier[0] + ':' + splitIdentifier[1];
         try {
-            metadata = Integer.parseInt(splitRegistry[2]);
-            amount = Integer.parseInt(splitRegistry[3]);
+            metadata = Integer.parseInt(splitIdentifier[2]);
+            amount = Integer.parseInt(splitIdentifier[3]);
             if (amount <= 0 || amount > 64)
                 throw new NumberFormatException("Invalid stack size: " + amount);
         } catch (NumberFormatException e) {
             throw new BadStackFormatException("Metadata or amount is not a number:", serializedItem, e);
         }
+
+        //Search for the item in the item registry.
         Item item = (Item) Item.itemRegistry.getObject(registry);
         if (item == null) {
             throw new MissingRegistryException(registry);
         }
+
+        //Create a new item stack with all the parsed information.
         ItemStack itemStack = new ItemStack(item, amount, metadata);
         if (!nbt.isEmpty()) {
             NBTBase nbtbase;
@@ -96,14 +120,15 @@ public class ItemUtils {
                 throw new BadNbtException(nbt, e);
             }
         }
+
         return itemStack;
     }
 
     /**
-     * Same as {@link #parseItem(String)} but will return null if an exception arises while decoding the item
+     * Same as {@link #parseItem(String)} but will return null if an exception arises while decoding the item.
      *
-     * @param serializedItem the string which contains the serialized item
-     * @return a forge item stack of the item
+     * @param serializedItem - the string which contains the serialized item
+     * @return A forge item stack of the item.
      */
     @Nullable
     public static ItemStack parseItemOrNull(String serializedItem) {
