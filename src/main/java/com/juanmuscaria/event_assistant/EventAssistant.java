@@ -20,11 +20,9 @@ import java.nio.file.Files;
  * @author juanmuscaria
  */
 @Mod(modid = EventAssistant.MOD_ID,
-        version = EventAssistant.VERSION,
         guiFactory = "com.juanmuscaria.event_assistant.configs.ConfigGuiFactory")
 public class EventAssistant {
-    public static final String MOD_ID = "@{modId}";
-    public static final String VERSION = "@{version}";
+    public static final String MOD_ID = "EventAssistant";
     /**
      * Mod instance singleton.
      */

@@ -1,8 +1,8 @@
 import io.github.gradlenexus.publishplugin.NexusPublishExtension
-import net.kyori.blossom.BlossomExtension
 import net.minecraftforge.gradle.delayed.DelayedFile
 import net.minecraftforge.gradle.user.UserExtension
 import net.minecraftforge.gradle.user.patch.ForgeUserPlugin
+import net.minecraftforge.gradle.tasks.user.reobf.ReobfTask as ReobfTask1
 
 buildscript {
     repositories {
@@ -26,14 +26,12 @@ buildscript {
     }
     dependencies {
         classpath("net.minecraftforge.gradle:ForgeGradle:1.2-1.0.0-SNAPSHOT")
-        classpath("gradle.plugin.net.kyori:blossom:1.1.0")
         classpath("io.github.gradle-nexus:publish-plugin:1.0.0")
     }
 }
 
 //apply(plugin = )
 apply(plugin = "forge")
-apply(plugin = "net.kyori.blossom")
 apply(plugin = "signing")
 apply(plugin = "maven-publish")
 apply(plugin = "io.github.gradle-nexus.publish-plugin")
@@ -52,10 +50,6 @@ val mixinRefMap = File(project.buildDir, "mixins/EventAssistant.refmap.json")
 configure<UserExtension> {
     version = "1.7.10-10.13.4.1614-1.7.10"
     runDir = "eclipse"
-}
-
-configure<BlossomExtension> {
-    replaceToken(mapOf("@{modId}" to modId, "@{version}" to project.version))
 }
 
 configure<JavaPluginExtension> {
@@ -98,6 +92,10 @@ repositories {
         name = "sponge"
         url = uri("https://repo.spongepowered.org/repository/maven-public/")
     }
+}
+
+tasks.named<ReobfTask1>("reobf") {
+    addExtraSrgFile(mixinSrg)
 }
 
 tasks.named<Test>("test") {
@@ -154,6 +152,12 @@ tasks.register<Copy>("copySrgs") {
 
 tasks.named<Jar>("jar") {
     from(mixinRefMap)
+    manifest {
+        attributes(
+                "GRIMOIRE_PATCHNAME" to "EA Hooks",
+                "GRIMOIRE_COREPATCH" to "true",
+                "GRIMOIRE_MODID" to modId)
+    }
 }
 
 tasks.named<JavaCompile>("compileJava") {
