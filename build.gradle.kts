@@ -47,7 +47,7 @@ this.setProperty("archivesBaseName", "event-assistant")
 val minecraft = extensions.findByType<UserExtension>()
 val sourceSets = extensions.findByType<SourceSetContainer>()
 val mixinSrg = File(project.buildDir, "mixins/mixin.EventAssistant.srg")
-val mixinRefMap = File(project.buildDir, "mixins/FePatcher.EventAssistant.json")
+val mixinRefMap = File(project.buildDir, "mixins/EventAssistant.refmap.json")
 //Equivalent of minecraft {}
 configure<UserExtension> {
     version = "1.7.10-10.13.4.1614-1.7.10"

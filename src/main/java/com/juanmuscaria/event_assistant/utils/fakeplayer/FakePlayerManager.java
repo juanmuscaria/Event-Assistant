@@ -30,7 +30,7 @@ public class FakePlayerManager {
      * Get or create a fake player.
      * Please do not keep or hold the instance of the fake player, it's information may change after use including the world and position.
      * The resulting fake player will have the name wrapped around "[]".
-     * 
+     *
      * @param world - the world the fake player will be.
      * @param pos   - the position the fake player will be.
      * @param name  - the name of the fake player.

@@ -2,7 +2,7 @@ package com.juanmuscaria.event_assistant.utils.tracking;
 
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +77,7 @@ public final class UserManager {
      * @param player - the player to get the user from.
      * @return An user of the player.
      */
-    public static User fromPlayer(EntityPlayerMP player) {
+    public static User fromPlayer(EntityPlayer player) {
         return fromProfile(Objects.requireNonNull(player).getGameProfile());
     }
 

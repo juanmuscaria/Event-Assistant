@@ -1,6 +1,5 @@
 package com.juanmuscaria.event_assistant;
 
-import lombok.Lombok;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Constructor;
@@ -281,7 +280,6 @@ public final class ReflectionAssistant {
          */
         Object invoke(Object target, Object... arguments);
     }
-
 
     /**
      * An interface for retrieving the field content.

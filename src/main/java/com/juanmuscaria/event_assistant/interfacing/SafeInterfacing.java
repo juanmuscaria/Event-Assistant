@@ -1,7 +1,9 @@
 package com.juanmuscaria.event_assistant.interfacing;
 
 import com.juanmuscaria.event_assistant.EventAssistant;
+import com.juanmuscaria.event_assistant.utils.fakeplayer.BetterFakePlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.FakePlayer;
 
 /**
  * An interface to interact with bukkit only api in a safe way.
@@ -39,6 +41,14 @@ public interface SafeInterfacing {
      * @throws UnsupportedOperationException if bukkit is missing.
      */
     Object toBukkitStack(Object forgeStack);
+
+    default boolean isTrackableFakePlayer(Object player) {
+        return player instanceof BetterFakePlayer;
+    }
+
+    default boolean isFakePlayer(Object player) {
+        return player instanceof FakePlayer;
+    }
 }
 
 class Provider {
