@@ -1,6 +1,8 @@
 import io.github.gradlenexus.publishplugin.NexusPublishExtension
 import net.kyori.blossom.BlossomExtension
+import net.minecraftforge.gradle.delayed.DelayedFile
 import net.minecraftforge.gradle.user.UserExtension
+import net.minecraftforge.gradle.user.patch.ForgeUserPlugin
 
 buildscript {
     repositories {
@@ -44,7 +46,8 @@ val modId = "EventAssistant"
 this.setProperty("archivesBaseName", "event-assistant")
 val minecraft = extensions.findByType<UserExtension>()
 val sourceSets = extensions.findByType<SourceSetContainer>()
-
+val mixinSrg = File(project.buildDir, "mixins/mixin.EventAssistant.srg")
+val mixinRefMap = File(project.buildDir, "mixins/FePatcher.EventAssistant.json")
 //Equivalent of minecraft {}
 configure<UserExtension> {
     version = "1.7.10-10.13.4.1614-1.7.10"
@@ -91,6 +94,10 @@ repositories {
         name = "github"
         url = uri("https://github.com/juanmuscaria/maven/raw/master")
     }
+    maven {
+        name = "sponge"
+        url = uri("https://repo.spongepowered.org/repository/maven-public/")
+    }
 }
 
 tasks.named<Test>("test") {
@@ -104,6 +111,17 @@ dependencies {
     "compile"("org.bukkit", "craftbukkit", "1.7.10")
     "compileOnly"("org.jetbrains:annotations:16.0.2")
     "compileOnly"("org.projectlombok:lombok:1.18.16")
+    "compileOnly"("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
+        exclude(module = "asm-commons")
+        exclude(module = "asm-tree")
+        exclude(module = "launchwrapper")
+        exclude(module = "guava")
+        exclude(module = "log4j-core")
+        exclude(module = "gson")
+        exclude(module = "commons-io")
+    }
+
+    "annotationProcessor"("org.spongepowered:mixin:0.7.11-SNAPSHOT")
     "annotationProcessor"("org.projectlombok:lombok:1.18.16")
 
     "testImplementation"(platform("org.junit:junit-bom:5.7.1"))
@@ -120,6 +138,30 @@ tasks.register<Jar>("sourcesJar") {
 tasks.register<Jar>("javadocJar") {
     from(tasks.named<Javadoc>("javadoc") )
     archiveClassifier.set("javadoc")
+}
+
+tasks.register<Copy>("copySrgs") {
+    dependsOn(tasks.named("genSrgs"))
+    // I know this is ugly like the rest of the script, bu that method is protected and that's the only way I found to work around it.
+    var file: DelayedFile? = null // Nullable to avoid unitialized variable errors
+    plugins.getPlugin(ForgeUserPlugin::class).withGroovyBuilder {
+        file = "delayedFile"("{SRG_DIR}") as DelayedFile // Access protected method
+    }
+    from(file)
+    include("**/*.srg")
+    into("build/srgs")
+}
+
+tasks.named<Jar>("jar") {
+    from(mixinRefMap)
+}
+
+tasks.named<JavaCompile>("compileJava") {
+    dependsOn(tasks.named("copySrgs"))
+    options.compilerArgs.addAll(listOf("-Xlint:-processing",
+            "-AoutSrgFile=${mixinSrg.canonicalPath}",
+            "-AoutRefMapFile=${mixinRefMap.canonicalPath}",
+            "-AreobfSrgFile=${file("build/srgs/mcp-srg.srg").canonicalPath}"))
 }
 
 tasks.named<ProcessResources>("processResources") {
