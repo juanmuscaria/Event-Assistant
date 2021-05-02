@@ -17,6 +17,7 @@ public class ClassloaderHacks {
             String.class, byte[].class, int.class, int.class);
 
     private final ClassLoader context;
+
     public ClassloaderHacks(ClassLoader cl) {
         context = cl;
     }

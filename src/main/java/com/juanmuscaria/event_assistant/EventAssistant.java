@@ -23,20 +23,28 @@ import java.nio.file.Files;
         guiFactory = "com.juanmuscaria.event_assistant.configs.ConfigGuiFactory")
 public class EventAssistant {
     public static final String MOD_ID = "EventAssistant";
+    //Checking if a class exist is slow, cache it!
+    private static final boolean bukkit = ReflectionAssistant.doesClassExist("org.bukkit.Bukkit");
     /**
      * Mod instance singleton.
      */
     @Mod.Instance(MOD_ID)
     public static EventAssistant mod;
-    //Checking if a class exist is slow, cache it!
-    private static final boolean bukkit = ReflectionAssistant.doesClassExist("org.bukkit.Bukkit");
-
     @Getter
     private Logger logger;
     @Getter
     private ConfigWrapper configs;
     @Getter
     private File dataFolder;
+
+    /**
+     * Check if bukkit is present in this platform.
+     *
+     * @return True if bukkit is present.
+     */
+    public static boolean hasBukkit() {
+        return bukkit;
+    }
 
     @SneakyThrows
     @Mod.EventHandler
@@ -57,15 +65,6 @@ public class EventAssistant {
         if (TileTracker.isAvailable()) {
             MinecraftForge.EVENT_BUS.register(TileTrackingListener.INSTANCE);
         }
-    }
-
-    /**
-     * Check if bukkit is present in this platform.
-     *
-     * @return True if bukkit is present.
-     */
-    public static boolean hasBukkit() {
-        return bukkit;
     }
 
 }

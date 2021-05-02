@@ -2,10 +2,13 @@ package com.juanmuscaria.event_assistant.utils.tracking;
 
 import com.juanmuscaria.event_assistant.utils.fakeplayer.FakePlayerManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Consumer;
 
 public class TileTracker {
     private TileTracker() {
@@ -61,8 +64,18 @@ public class TileTracker {
         if (tile instanceof ITrackableTileEntity) {
             return ((ITrackableTileEntity) tile).getFakePlayer();
         } else {
-            return FakePlayerManager.get((WorldServer) tile.getWorldObj(),
+            return FakePlayerManager.getOrConfigure((WorldServer) tile.getWorldObj(),
                     new ChunkCoordinates(tile.xCoord, tile.yCoord, tile.zCoord));
+        }
+    }
+
+    public static void withFakePlayer(@NotNull TileEntity tile, Consumer<EntityPlayerMP> consumer) {
+        if (tile instanceof ITrackableTileEntity) {
+            ((ITrackableTileEntity) tile).withFakePlayer(consumer);
+        } else {
+            FakePlayerManager.withFakePlayer((WorldServer) tile.getWorldObj(),
+                    new ChunkCoordinates(tile.xCoord, tile.yCoord, tile.zCoord),
+                    consumer);
         }
     }
 }

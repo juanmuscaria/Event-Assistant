@@ -5,12 +5,14 @@ import com.juanmuscaria.event_assistant.utils.UuidUtils;
 import com.juanmuscaria.event_assistant.utils.tracking.User;
 import com.juanmuscaria.event_assistant.utils.tracking.UserManager;
 import com.mojang.authlib.GameProfile;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.WorldServer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 /**
  * A class to help creating and configuring fake players without using much resources.
@@ -37,7 +39,7 @@ public class FakePlayerManager {
      * @return A configured fake player.
      */
     @NotNull
-    public static BetterFakePlayer get(WorldServer world, ChunkCoordinates pos, String name) {
+    public static BetterFakePlayer getOrConfigure(WorldServer world, ChunkCoordinates pos, String name) {
         BetterFakePlayer fakePlayer = cache.get(name);
         if (fakePlayer == null) {
             String fName = "[" + name + "]";
@@ -60,9 +62,9 @@ public class FakePlayerManager {
      * @param owner - the user owning this fake player with may receive proxied chat messages and help with tracking.
      * @return a configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
      */
-    public static BetterFakePlayer get(WorldServer world, ChunkCoordinates pos, User owner) {
+    public static BetterFakePlayer getOrConfigure(WorldServer world, ChunkCoordinates pos, User owner) {
         if (owner.equals(UserManager.nobody())) {
-            return get(world, pos);
+            return getOrConfigure(world, pos);
         }
         BetterFakePlayer fakePlayer = cache.get(owner.getPlayerName());
         if (fakePlayer == null) {
@@ -85,7 +87,7 @@ public class FakePlayerManager {
      * @param pos   - the position the fake player will be.
      * @return A configured fake player, the object may be reused and reconfigured by other calls, prefer to call this method again when a fake player is needed.
      */
-    public static BetterFakePlayer get(WorldServer world, ChunkCoordinates pos) {
+    public static BetterFakePlayer getOrConfigure(WorldServer world, ChunkCoordinates pos) {
         BetterFakePlayer player = fakeModPlayer.get();
         if (player == null) {
             player = new BetterFakePlayer(world, fakeModProfile, UserManager.nobody());
@@ -94,6 +96,24 @@ public class FakePlayerManager {
         player.worldObj = world;
         player.setFakePosition(pos);
         return player;
+    }
+
+    public static void withFakePlayer(WorldServer world, ChunkCoordinates pos, Consumer<EntityPlayerMP> consumer) {
+        BetterFakePlayer fake = getOrConfigure(world, pos);
+        consumer.accept(fake);
+        fake.worldObj = null;
+    }
+
+    public static void withFakePlayer(WorldServer world, ChunkCoordinates pos, User owner, Consumer<EntityPlayerMP> consumer) {
+        BetterFakePlayer fake = getOrConfigure(world, pos, owner);
+        consumer.accept(fake);
+        fake.worldObj = null;
+    }
+
+    public static void withFakePlayer(WorldServer world, ChunkCoordinates pos, String name, Consumer<EntityPlayerMP> consumer) {
+        BetterFakePlayer fake = getOrConfigure(world, pos, name);
+        consumer.accept(fake);
+        fake.worldObj = null;
     }
 
 }

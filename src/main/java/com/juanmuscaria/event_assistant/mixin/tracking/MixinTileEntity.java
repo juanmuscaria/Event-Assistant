@@ -5,6 +5,7 @@ import com.juanmuscaria.event_assistant.utils.tracking.ITrackableTileEntity;
 import com.juanmuscaria.event_assistant.utils.tracking.User;
 import com.juanmuscaria.event_assistant.utils.tracking.UserManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -16,14 +17,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.function.Consumer;
+
 @Mixin(TileEntity.class)
 public abstract class MixinTileEntity implements ITrackableTileEntity {
-    @Shadow
-    public abstract void markDirty();
-
-    @Shadow
-    public abstract World getWorldObj();
-
     @Shadow
     public int xCoord;
     @Shadow
@@ -31,6 +28,12 @@ public abstract class MixinTileEntity implements ITrackableTileEntity {
     @Shadow
     public int zCoord;
     User ownerEa = UserManager.nobody();
+
+    @Shadow
+    public abstract void markDirty();
+
+    @Shadow
+    public abstract World getWorldObj();
 
     @Override
     public User getOwner() {
@@ -45,9 +48,16 @@ public abstract class MixinTileEntity implements ITrackableTileEntity {
 
     @Override
     public EntityPlayer getFakePlayer() {
-        return FakePlayerManager.get((WorldServer) getWorldObj(),
+        return FakePlayerManager.getOrConfigure((WorldServer) getWorldObj(),
                 new ChunkCoordinates(xCoord, yCoord, zCoord),
                 ownerEa);
+    }
+
+    @Override
+    public void withFakePlayer(Consumer<EntityPlayerMP> consumer) {
+        FakePlayerManager.withFakePlayer((WorldServer) getWorldObj(),
+                new ChunkCoordinates(xCoord, yCoord, zCoord),
+                ownerEa, consumer);
     }
 
     @Inject(method = "readFromNBT", at = @At("HEAD"))
