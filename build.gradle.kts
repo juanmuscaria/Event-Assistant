@@ -16,7 +16,7 @@ buildscript {
             url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
         }
         maven {
-            name = "github"
+            name = "juanmuscaria"
             url = uri("https://github.com/juanmuscaria/maven/raw/master")
         }
         maven {
@@ -25,7 +25,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath("net.minecraftforge.gradle:ForgeGradle:1.2-1.0.0-SNAPSHOT")
+        classpath("net.minecraftforge.gradle:ForgeGradle:1.2-1.0.1-SNAPSHOT")
         classpath("io.github.gradle-nexus:publish-plugin:1.0.0")
     }
 }
@@ -85,7 +85,7 @@ configure<PublishingExtension> {
 repositories {
     mavenCentral()
     maven {
-        name = "github"
+        name = "juanmuscaria"
         url = uri("https://github.com/juanmuscaria/maven/raw/master")
     }
     maven {
