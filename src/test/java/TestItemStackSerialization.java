@@ -10,8 +10,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Function;
+
 //Target implementation <itemIdentifier:metadata:amount>(nbtTag)
-public class TestItemStackSerialization {
+class TestItemStackSerialization {
     static HackyMinecraftEnv environment;
 
     @BeforeAll
@@ -21,10 +23,10 @@ public class TestItemStackSerialization {
     }
 
     @Test
-    public void serialize() {
-        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
+    void serialize() {
+        environment.call(new Function<Void, Void>() {
             @Override
-            void call() {
+            public Void apply(Void unused) {
                 ItemStack[] stackArray = new ItemStack[]{
                         new ItemStack(Items.diamond, 3, 5),
                         withNbt(new ItemStack(Blocks.stone, 7, 1), "{}"),
@@ -33,15 +35,16 @@ public class TestItemStackSerialization {
                 Assertions.assertEquals("<minecraft:diamond:5:3>()", ItemUtils.encodeItem(stackArray[0]));
                 Assertions.assertEquals("<minecraft:stone:1:7>({})", ItemUtils.encodeItem(stackArray[1]));
                 Assertions.assertEquals("<minecraft:dirt:4:2>({tag1:\"something\",integer:5,})", ItemUtils.encodeItem(stackArray[2]));
+                return null;
             }
-        }.getClass());
+        });
     }
 
     @Test
-    public void deserialize() {
-        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
+    void deserialize() {
+        environment.call(new Function<Void, Void>() {
             @Override
-            void call() {
+            public Void apply(Void unused) {
                 String[] stackArray = new String[]{
                         "<minecraft:dirt:0:5>()", // 5 dirt
                         "<minecraft:wool:5:10>()", // 10 lime wool
@@ -73,8 +76,9 @@ public class TestItemStackSerialization {
                 Assertions.assertEquals(7, stoneNbt.stackSize);
                 Assertions.assertNotNull(stoneNbt.stackTagCompound);
                 Assertions.assertEquals("some text", stoneNbt.stackTagCompound.getString("someTag"));
+                return null;
             }
-        }.getClass());
+        });
     }
 
     //Non static calls in the injected class will give a NPE

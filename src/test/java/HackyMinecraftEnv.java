@@ -1,5 +1,5 @@
-import com.google.common.io.ByteStreams;
 import com.juanmuscaria.event_assistant.ReflectionAssistant;
+import com.juanmuscaria.event_assistant.utils.ClassloaderHacks;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.relauncher.FMLLaunchHandler;
 import cpw.mods.fml.relauncher.FMLRelaunchLog;
@@ -8,19 +8,18 @@ import net.minecraft.init.Bootstrap;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 import java.io.File;
-import java.io.InputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class HackyMinecraftEnv {
     final URLClassLoader ucl;
     final LaunchClassLoader classLoader;
     final ReflectionAssistant.MethodInvoker defineClass = ReflectionAssistant.getMethod(ClassLoader.class, "defineClass", String.class, byte[].class, int.class, int.class);
+    final ClassloaderHacks classloaderCallable;
 
     public HackyMinecraftEnv() {
         this(false);
@@ -38,12 +37,13 @@ public class HackyMinecraftEnv {
             }
             classLoader = new LaunchClassLoader(urls.toArray(new URL[0]));
         }
+        classloaderCallable = new ClassloaderHacks(classLoader);
     }
 
     public void initMinecraft() {
-        callInsideLauncherClassLoader(new Callable() {
+        classloaderCallable.inject(new Function<Void, Void>() {
             @Override
-            void call() {
+            public Void apply(Void unused) {
                 try {
                     Loader.injectData("a", "b", "c", "d", "1.7.10", "e", new File(""), new ArrayList<String>());
                     Field side = FMLRelaunchLog.class.getDeclaredField("side");
@@ -56,41 +56,11 @@ public class HackyMinecraftEnv {
                 } catch (ReflectiveOperationException e) {
                     throw new RuntimeException(e);
                 }
+                return null;
             }
-        }.getClass());
+        }).apply(null);
     }
-
-    public void callInsideLauncherClassLoader(Class<? extends Callable> callable) {
-        ClassLoader oldClassloader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(classLoader);
-        Class<?> clazz = injectClass(callable);
-        try {
-            Method callMe = clazz.getDeclaredMethod("call");
-            callMe.setAccessible(true);
-            Constructor<?> c = clazz.getDeclaredConstructors()[0];
-            c.setAccessible(true);
-            callMe.invoke(c.newInstance((Object) null));
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldClassloader);
-        }
-    }
-
-    public Class<?> injectClass(Class<?> clazz) {
-        try (InputStream in = clazz.getClassLoader().getResourceAsStream(clazz.getName().replace('.', '/') + ".class")) {
-            byte[] bytes = ByteStreams.toByteArray(in);
-            return (Class<?>) defineClass.invoke(classLoader, clazz.getName(), bytes, 0, bytes.length);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            return null;
-        }
-    }
-
-    public static abstract class Callable {
-        public Callable() {
-        }
-
-        abstract void call();
+    void call(Function<Void, Void> fun) {
+        classloaderCallable.inject(fun).apply(null);
     }
 }

@@ -5,29 +5,32 @@ import org.bukkit.Bukkit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TestFakeEnviroment {
+import java.util.function.Function;
+
+class TestFakeEnviroment {
 
     @Test
-    public void initMinecraft() {
+    void initMinecraft() {
         HackyMinecraftEnv environment = new HackyMinecraftEnv();
         environment.initMinecraft();
-        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
+        environment.call(new Function<Void, Void>() {
             @Override
-            void call() {
+            public Void apply(Void unused) {
                 Bukkit.class.getName();
                 Assertions.assertEquals(GameRegistry.findUniqueIdentifierFor(Items.diamond).toString(), "minecraft:diamond");
                 Assertions.assertEquals(GameRegistry.findUniqueIdentifierFor(Blocks.stone).toString(), "minecraft:stone");
+                return null;
             }
-        }.getClass());
+        });
     }
 
     @Test
-    public void assertNoBukkit() {
+    void assertNoBukkit() {
         HackyMinecraftEnv environment = new HackyMinecraftEnv(true);
         environment.initMinecraft();
-        environment.callInsideLauncherClassLoader(new HackyMinecraftEnv.Callable() {
+        environment.call(new Function<Void, Void>() {
             @Override
-            void call() {
+            public Void apply(Void unused) {
                 Error error = null;
                 try {
                     Bukkit.class.getName();
@@ -35,8 +38,9 @@ public class TestFakeEnviroment {
                     error = e;
                 }
                 Assertions.assertNotNull(error);
+                return null;
             }
-        }.getClass());
+        });
     }
 
 }
